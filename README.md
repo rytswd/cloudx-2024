@@ -34,6 +34,7 @@ In order to run through the demo steps for Bash, you will need the following too
 - `bash`
 - `jq`
 - `curl`
+- `kubectl`
 
 In order to run through the demo steps for Nushell, you just need Nushell installed.
 
