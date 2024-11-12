@@ -18,6 +18,8 @@ execute 'yq argocd-install.yaml'
 comment "2.1. Check content simply with cat"
 execute 'cat argocd-install.yaml | head -n 20'
 
+clear_terminal
+
 comment "NOTE: The rest of the steps assume you have a running cluster."
 
 comment "3. Check the installed manifests"

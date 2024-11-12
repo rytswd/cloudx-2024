@@ -46,7 +46,7 @@ Given the cluster, let's check the version of Deployments.
     | from json
     | get items
     # Remove noisy output
-    | reject metadata.anontations."kubectl.kubernetes.io/last-applied-configuration")
+    | reject metadata.annotations."kubectl.kubernetes.io/last-applied-configuration")
 #+end_src
 
 Check all of the Deployment spec.
