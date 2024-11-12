@@ -1,0 +1,67 @@
+#+title: Demo Steps for Nushell
+
+This document lists out the commands I used during the demo.
+
+* 1. Get Argo CD
+You do not need ~curl~ or ~wget~, simply use ~http get~ command:
+#+begin_src nushell
+  http get https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+#+end_src
+
+I can also save the output to a variable for future reference:
+#+begin_src nushell
+  let argocd_spec = (http get https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml)
+#+end_src
+
+* 2. Check Content
+I do not need ~yq~ or ~jq~, structured data is handled natively in Nushell.
+#+begin_src nushell
+  $argocd_spec  
+#+end_src
+
+I can check all the Service names with simple query syntax.
+#+begin_src nushell
+  $argocd_spec | where kind == "Service"
+#+end_src
+
+I can find all the resource names with simple ~get~.
+#+begin_src nushell
+  $argocd_spec | where kind == "Service" | get metadata.name
+#+end_src
+
+* 3. Check Installed Argo CD
+Assuming you have a Kubernetes cluster with some Argo CD version installed already, we can investigate the version differences easily with Nushell.
+
+Before going ahead with the steps, if you don't have the cluster ready, you can simply get a KinD cluster with the following commands. (Any shell would work as long as you have ~kubectl~ and ~kind~ available.)
+#+begin_src bash
+  kind create cluster
+  kubectl create namespace argocd
+  kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/v2.12.7/manifests/ha/install.yaml
+#+end_src
+
+Given the cluster, let's check the version of Deployments.
+#+begin_src nushell
+  let installed_argocd_deployment = (
+    kubectl get deployments -n argocd -o json
+    | from json
+    | get items
+    # Remove noisy output
+    | reject metadata.anontations."kubectl.kubernetes.io/last-applied-configuration")
+#+end_src
+
+Check all of the Deployment spec.
+#+begin_src nushell
+  $installed_argocd_deployment
+#+end_src
+
+Find the version information.
+#+begin_src nushell
+  $installed_argocd_deployment
+  | select metadata.name spec.template.spec.containers.0.image
+#+end_src
+
+* Clean up
+If you started a KinD cluster with the instructions above, you can delete it by simply running:
+#+begin_src bash
+  kind delete cluster
+#+end_src
