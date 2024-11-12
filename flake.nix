@@ -33,6 +33,7 @@
             pkgs.curl
             pkgs.jq
             pkgs.nushell
+            pkgs.kubectl
           ] ++ pkgs.lib.optionals pkgs.stdenv.isLinux [
             pkgs.gavin-bc
           ];
