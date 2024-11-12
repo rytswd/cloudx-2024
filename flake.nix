@@ -32,8 +32,9 @@
             pkgs.bash
             pkgs.curl
             pkgs.jq
-            pkgs.gavin-bc
             pkgs.nushell
+          ] ++ pkgs.lib.optionals pkgs.stdenv.isLinux [
+            pkgs.gavin-bc
           ];
 
           # You can define custom environment variables.
